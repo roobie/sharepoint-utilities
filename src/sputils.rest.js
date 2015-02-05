@@ -143,6 +143,9 @@ function $_global_sputils_rest () {
 
     */
 
+    // Results from the standard SharePoint REST APIs come
+    // wrapped in objects. This convenience function unwraps
+    // them for you. See example use.
     var unwrapResults = function (object) {
       return object.d.results;
     };
