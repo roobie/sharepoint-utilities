@@ -99,6 +99,10 @@ function $_global_sputils_rest () {
         });
     };
 
+    var unwrapResults = function (object) {
+      return object.d.results;
+    };
+
     /*
 
       API
@@ -151,7 +155,8 @@ function $_global_sputils_rest () {
 
     var getListByName = function (name, config) {
       var url = '/_api/Web/Lists/getByTitle(\'' + name + '\')/items/';
-      return get(url, config);
+      return get(url, config)
+        .then(unwrapResults);
     };
 
     /*
@@ -165,7 +170,8 @@ function $_global_sputils_rest () {
 
     var postListByName = function (name, data, config) {
       var url = '/_api/Web/Lists/getByTitle(\'' + name + '\')/items/';
-      return post(url, data, config);
+      return post(url, data, config)
+        .then(unwrapResults);
     };
 
     /*
