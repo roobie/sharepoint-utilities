@@ -99,10 +99,6 @@ function $_global_sputils_rest () {
         });
     };
 
-    var unwrapResults = function (object) {
-      return object.d.results;
-    };
-
     /*
 
       API
@@ -144,6 +140,24 @@ function $_global_sputils_rest () {
 
     sputils.rest.post("/_api/Web/Lists/getByTitle('Announcements')/items/", data)
       .then(function (data) { console.log(data) });
+
+    */
+
+    var unwrapResults = function (object) {
+      return object.d.results;
+    };
+
+    /*
+
+    EXAMPLE USE:
+
+    sputils.rest.get("/_api/web/lists")
+      .then(sputils.rest.unwrapResults)
+      .then(function (data) {
+        $.each(data, function (idx,el) {
+          console.log(el);
+        });
+    });
 
     */
 
