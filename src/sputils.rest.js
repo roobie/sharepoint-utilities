@@ -190,7 +190,8 @@ function $_global_sputils_rest () {
       get: get,
       post: post,
       getListByName: getListByName,
-      postListByName: postListByName
+      postListByName: postListByName,
+      unwrapResults: unwrapResults
     };
   })(window, jQuery, _spPageContextInfo);
 }
