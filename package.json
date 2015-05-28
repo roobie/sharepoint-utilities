@@ -9,11 +9,15 @@
     "grunt-contrib-uglify": "~0.7.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-karma": "^0.10.1",
+    "json-mock": "^0.1.0",
     "karma": "^0.12.31",
     "karma-chai": "^0.1.0",
     "karma-ie-launcher": "^0.1.5",
     "karma-mocha": "^0.1.10",
     "matchdep": "~0.3.0",
     "mocha": "^2.2.5"
+  },
+  "scripts": {
+    "test": "karma start"
   }
 }

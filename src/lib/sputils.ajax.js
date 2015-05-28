@@ -2,12 +2,13 @@
   // Module
   var sputils = global.sputils = global.sputils || {};
 
+  var STR = 'string';
+
   /*
    * Based off of
    * https://github.com/yanatan16/nanoajax
    * https://github.com/yanatan16/nanoajax/commit/4988099161ca0b8966bb2faae6dd18aeca55fd17
   **/
-
   function getRequest() {
     if (global.XMLHttpRequest) {
       return new global.XMLHttpRequest;
@@ -23,7 +24,7 @@
   }
 
   sputils.ajax = function (params, callback) {
-    if (typeof params == 'string') params = {url: params};
+    if (typeof params === STR) params = {url: params};
     var headers = params.headers || {}
       , body = params.body
       , method = params.method || (body ? 'POST' : 'GET')
@@ -43,8 +44,9 @@
     }
 
     if (body) {
-      setDefault(headers, 'X-Requested-With', 'XMLHttpRequest')
-      setDefault(headers, 'Content-Type', 'application/x-www-form-urlencoded')
+      setDefault(headers, 'X-Requested-With', 'XMLHttpRequest');
+      setDefault(headers, 'Content-Type', 'application/json');
+      setDefault(headers, 'Accept', 'application/json;odata=verbose');
     }
 
     xhr.open(method, params.url, true);
@@ -53,33 +55,45 @@
       xhr.setRequestHeader(field, headers[field]);
     }
 
-    xhr.send(body);
+    xhr.send(body && typeof body !== STR ?
+      JSON.stringify(body) :
+      (body || null));
 
     return xhr;
   };
 
   var makeRequester = function (method) {
-    return function (params) {
+    return function doAjax(params) {
+      // This promise could be a HTML5 Promise, or a Bluebird promise or a...
       return new global.Promise(function (resolve, reject) {
         function handler(status, response, request) {
           if (status < 300 && status >= 200) {
-            resolve(response);
+            resolve({
+              data: response,
+              status: status,
+              request: request
+            });
           } else {
-            reject(new Error(status, response, request));
+            reject({
+              error: new Error(response),
+              status: status,
+              request: request
+            });
           }
         }
 
-        params = typeof params === 'string' ? {
-          url: params, method: method.toUpperCase()
-        } : params;
+        params = typeof params === STR ? { url: params } : params;
+        params.headers = params.headers || {};
+        params.method = method.toUpperCase();
 
         var xhr = sputils.ajax(params, handler);
         xhr.addEventListener("error", reject);
         xhr.addEventListener("load", resolve);
-      }).then(function (data) {
-        // might be other things, maybe?
-        // Or do we always want to use JSON?
-        return JSON.parse(data);
+      }).then(function toJSON(result) {
+        try {
+          result.data = JSON.parse(result.data);
+        } catch (e) { }
+        return result;
       });
     };
   };

@@ -1,6 +1,14 @@
 // Karma configuration
 // Generated on Thu Feb 05 2015 09:37:08 GMT+0100 (W. Europe Standard Time)
 
+var jsonServer = require('json-mock')
+
+var server = jsonServer.create()         // Express server
+server.use(jsonServer.defaults)          // Default middlewares (logger, public, cors)
+server.use(jsonServer.router('db.json')) // Express router
+
+server.listen(9000);
+
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
